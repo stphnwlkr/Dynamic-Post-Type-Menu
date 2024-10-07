@@ -23,7 +23,7 @@ class Menu_Handler {
         }
 
         // Path to the icon file (update if necessary).
-        $icon_url = plugin_dir_url(__FILE__) . 'assets/img/icons/note-edit-stroke-standard.svg';
+        $icon_url = plugin_dir_url(__FILE__) . '../assets/img/icons/note-edit-stroke-standard.svg';
 
         // Add the parent menu item with an icon.
         $wp_admin_bar->add_node([
