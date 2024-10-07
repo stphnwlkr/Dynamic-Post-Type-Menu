@@ -33,13 +33,30 @@ class Menu_Handler {
         // Get all public post types.
         $post_types = get_post_types(['public' => true], 'objects');
 
-        // Sort post types alphabetically by label.
-        usort($post_types, function($a, $b) {
+        // Separate Posts and Pages from other post types.
+        $default_post_types = [];
+        $other_post_types = [];
+
+        foreach ($post_types as $post_type) {
+            if ($post_type->name === 'post' || $post_type->name === 'page') {
+                $default_post_types[$post_type->name] = $post_type;
+            } else {
+                $other_post_types[$post_type->name] = $post_type;
+            }
+        }
+
+        // Sort other post types alphabetically by label.
+        usort($other_post_types, function ($a, $b) {
             return strcmp($a->labels->name, $b->labels->name);
         });
 
-        // Add submenus for each post type based on user role.
-        foreach ($post_types as $post_type) {
+        // First add Posts and Pages.
+        foreach ($default_post_types as $post_type) {
+            $this->add_role_based_menus($wp_admin_bar, $post_type);
+        }
+
+        // Then add other post types in alphabetical order.
+        foreach ($other_post_types as $post_type) {
             $this->add_role_based_menus($wp_admin_bar, $post_type);
         }
     }
