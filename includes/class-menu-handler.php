@@ -12,7 +12,7 @@ class Menu_Handler {
     }
 
     /**
-     * Adds the parent "Post Type Listings" menu to the admin bar.
+     * Adds the parent "Content Types" menu to the admin bar.
      *
      * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
      */
@@ -25,7 +25,7 @@ class Menu_Handler {
         // Add the parent menu item.
         $wp_admin_bar->add_node([
             'id'    => 'post-types',
-            'title' => __('Post Types', 'dynamic-post-type-menu'),
+            'title' => __('Content Types', 'dynamic-post-type-menu'),
             'href'  => false,
             'meta'  => ['class' => 'menupop'],
         ]);
@@ -40,6 +40,11 @@ class Menu_Handler {
         foreach ($post_types as $post_type) {
             if ($post_type->name === 'post' || $post_type->name === 'page') {
                 $default_post_types[$post_type->name] = $post_type;
+            } elseif ($post_type->name === 'bricks_template') {
+                // Rename 'My Templates' to 'Bricks Templates'
+                $post_type->labels->name = 'Bricks Templates';
+                $post_type->labels->singular_name = 'Bricks Template';
+                $default_post_types[$post_type->name] = $post_type; // Insert Bricks Templates after Posts and Pages.
             } else {
                 $other_post_types[$post_type->name] = $post_type;
             }
@@ -50,7 +55,7 @@ class Menu_Handler {
             return strcmp($a->labels->name, $b->labels->name);
         });
 
-        // First add Posts and Pages.
+        // First add Posts, Pages, and Bricks Templates.
         foreach ($default_post_types as $post_type) {
             $this->add_role_based_menus($wp_admin_bar, $post_type);
         }
@@ -70,16 +75,7 @@ class Menu_Handler {
     private function add_role_based_menus($wp_admin_bar, $post_type) {
         // Sanitize the post type name for use in HTML classes and IDs.
         $post_type_slug = sanitize_html_class($post_type->name);
-
-        // Rename "My Templates" to "Bricks Templates" if the post type is "bricks_template".
-        if ($post_type->name === 'bricks_template') {
-            $plural_label = 'Bricks Templates';
-            $singular_label = 'Bricks Template';
-        } else {
-            // Use default labels for other post types.
-            $plural_label = esc_html($post_type->labels->name);
-            $singular_label = esc_html($post_type->labels->singular_name);
-        }
+        $plural_label = esc_html($post_type->labels->name);
 
         // Check if the current user is an Admin or Editor.
         if (current_user_can('edit_others_posts')) {
