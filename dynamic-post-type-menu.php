@@ -2,10 +2,11 @@
 /**
  * Plugin Name: Dynamic Post Type Menu
  * Description: Adds a dropdown menu to the admin bar with links to all post types and their author-specific listings.
- * Version: 1.4
+ * Version: 1.5
  * Author: Stephen Walker
  * Requires at least: 6.0
  * Tested up to: 6.6.2
+ * Requires PHP 8+
  * Text Domain: dynamic-post-type-menu
  * Domain Path: /languages
  */
