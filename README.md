@@ -15,3 +15,7 @@ Content Types
   - All [Other Post Types]
   - My [Other Post Types]
   - New [Other Post Yype]
+## Updates
+- Refactored for PHP 8
+- Added "New Content" option
+- Bricks Builder My Templates renamed to Bricks Templates
