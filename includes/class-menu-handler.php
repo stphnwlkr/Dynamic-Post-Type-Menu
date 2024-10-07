@@ -70,7 +70,16 @@ class Menu_Handler {
     private function add_role_based_menus($wp_admin_bar, $post_type) {
         // Sanitize the post type name for use in HTML classes and IDs.
         $post_type_slug = sanitize_html_class($post_type->name);
-        $plural_label = esc_html($post_type->labels->name);
+
+        // Rename "My Templates" to "Bricks Templates" if the post type is "bricks_template".
+        if ($post_type->name === 'bricks_template') {
+            $plural_label = 'Bricks Templates';
+            $singular_label = 'Bricks Template';
+        } else {
+            // Use default labels for other post types.
+            $plural_label = esc_html($post_type->labels->name);
+            $singular_label = esc_html($post_type->labels->singular_name);
+        }
 
         // Check if the current user is an Admin or Editor.
         if (current_user_can('edit_others_posts')) {
