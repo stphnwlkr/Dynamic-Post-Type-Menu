@@ -22,10 +22,13 @@ class Menu_Handler {
             return;
         }
 
-        // Add the parent menu item.
+        // Path to the icon file (update if necessary).
+        $icon_url = plugin_dir_url(__FILE__) . '../assets/img/icons/note-edit-stroke-standard.svg';
+
+        // Add the parent menu item with an icon.
         $wp_admin_bar->add_node([
             'id'    => 'post-types',
-            'title' => __('Content Types', 'dynamic-post-type-menu'),
+            'title' => '<img src="' . esc_url($icon_url) . '" alt="Icon" style="margin-right: 5px; height: 16px; vertical-align: middle;">' . __('Content Types', 'dynamic-post-type-menu'),
             'href'  => false,
             'meta'  => ['class' => 'menupop'],
         ]);
