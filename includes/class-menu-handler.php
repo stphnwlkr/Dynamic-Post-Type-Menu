@@ -25,7 +25,7 @@ class Menu_Handler {
         // Add the parent menu item.
         $wp_admin_bar->add_node([
             'id'    => 'post-types',
-            'title' => __('Post Type Listings', 'dynamic-post-type-menu'),
+            'title' => __('Post Types', 'dynamic-post-type-menu'),
             'href'  => false,
             'meta'  => ['class' => 'menupop'],
         ]);
