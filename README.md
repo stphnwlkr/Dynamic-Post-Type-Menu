@@ -16,6 +16,13 @@ Content Types
   - My [Other Post Types]
   - New [Other Post Yype]
 
+
 # 1.5 New Window Link
 
 Added an "Open in new window" link and stylesheet
+
+## Updates
+- Refactored for PHP 8
+- Added "New Content" option
+- Bricks Builder My Templates renamed to Bricks Templates
+
