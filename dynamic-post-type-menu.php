@@ -6,9 +6,11 @@
  * Author: Stephen Walker
  * Requires at least: 6.0
  * Tested up to: 6.6.2
- * Requires PHP 8+
+ * Author URI:https://flyingw.co/
+ * License: GPL-2.0+
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.txt
+
  * Text Domain: dynamic-post-type-menu
- * Domain Path: /languages
  */
 
 // Prevent direct access.
@@ -43,3 +45,10 @@ register_deactivation_hook(__FILE__, 'dynamic_post_type_menu_deactivate');
 function dynamic_post_type_menu_deactivate() {
     // Cleanup tasks.
 }
+
+function dynamic_post_type_menu_enqueue_styles() {
+    wp_enqueue_style('dynamic-post-type-menu-style', plugin_dir_path(__FILE__) . 'assets/styles.css');
+}
+add_action('wp_enqueue_scripts', 'dynamic_post_type_menu_enqueue_styles');
+add_action('admin_enqueue_scripts', 'dynamic_post_type_menu_enqueue_styles'); 
+
