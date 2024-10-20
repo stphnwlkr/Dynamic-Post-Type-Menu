@@ -45,7 +45,7 @@ function dynamic_post_type_menu_deactivate() {
     // Cleanup tasks.
 }
 function dynamic_post_type_menu_enqueue_styles() {
-    wp_enqueue_style('dynamic-post-type-menu-style', plugin_dir_path(__FILE__) . 'assets/styles.css');
+    wp_enqueue_style('dynamic-post-type-menu-style', plugin_dir_path(__FILE__) . 'assets/css/styles.css');
 }
 add_action('wp_enqueue_scripts', 'dynamic_post_type_menu_enqueue_styles');
 add_action('admin_enqueue_scripts', 'dynamic_post_type_menu_enqueue_styles'); 
