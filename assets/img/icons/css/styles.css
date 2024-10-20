@@ -1,0 +1,48 @@
+span.sr-only {
+    position: absolute!important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+ul:has(.menu-item-flex){
+	padding:0;
+	margin:0;
+	margin-block:4px;
+}
+/* Flexbox layout for the menu items */
+.menu-item-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+	margin-block-end:4px;
+}
+
+.icon-link{
+	display:block;
+	padding:4px 8px;
+	opacity:.6;
+	position:relative!important;
+	isolation:isolate;
+}
+.icon-link::before {
+	content:"";
+	position:absolute!important;
+	height:100%;
+	left:2px;
+	width:1px;
+	background:linear-gradient(transparent 20%, #ffffff 20%, #ffffff 80%,transparent 80%);
+	opacity:.6;
+}
+.icon-link:hover,.icon-link:hover::before {
+	opacity:1;
+}
+/* Styles for the new window link icon */
+.new-window-icon {
+	margin-left: 10px; 
+	height: 16px!important; 
+	vertical-align: middle;
+}

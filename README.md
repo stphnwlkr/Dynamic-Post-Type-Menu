@@ -15,3 +15,7 @@ Content Types
   - All [Other Post Types]
   - My [Other Post Types]
   - New [Other Post Yype]
+
+# 1.5 New Window Link
+
+Added an "Open in new window" link and stylesheet
