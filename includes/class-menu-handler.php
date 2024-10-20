@@ -126,7 +126,7 @@ class Menu_Handler {
                         <a href="%s">%s</a>
 					</div>
                     <div class="icon-link">
-                        <a href="%s" target="_blank" role="button"  aria-label="Open All %s in a new window">
+                        <a href="%s" target="_blank" role="button" aria-label="Open All %s in a new window" title="%s → Open All %s in a new tab">
                             <span class="sr-only">%s</span>
                             <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
                         </a>
@@ -135,6 +135,8 @@ class Menu_Handler {
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}")),
                 sprintf(__('All %s', 'dynamic-post-type-menu'), $plural_label),
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}")),
+                $plural_label,
+                $plural_label,
                 $plural_label,
                 __('Open in New Window', 'dynamic-post-type-menu'),
                 esc_url($new_window_icon_url)
@@ -152,7 +154,7 @@ class Menu_Handler {
                         <a href="%s">%s</a>
 					</div>
                     <div class="icon-link">
-                        <a href="%s" target="_blank" role="button"  aria-label="Open All %s in a new window">
+                        <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
                             <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
                         </a>
@@ -161,6 +163,8 @@ class Menu_Handler {
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
                 sprintf(__('My %s', 'dynamic-post-type-menu'), $plural_label),
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
+                $plural_label,
+                $plural_label,
                 $plural_label,
                 __('Open in New Window', 'dynamic-post-type-menu'),
                 esc_url($new_window_icon_url)
@@ -184,7 +188,7 @@ class Menu_Handler {
                         <a href="%s">%s</a>
 					</div>
                     <div class="icon-link">
-                        <a href="%s" target="_blank" role="button"  aria-label="Open All %s in a new window">
+                        <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
                             <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
                         </a>
@@ -193,6 +197,8 @@ class Menu_Handler {
                 esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
                 $add_new_label,
                 esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                $plural_label,
+                $plural_label,
                 $plural_label,
                 __('Open in New Window', 'dynamic-post-type-menu'),
                 esc_url($new_window_icon_url)
@@ -215,7 +221,7 @@ class Menu_Handler {
                         <a href="%s">%s</a>
 					</div>
                     <div class="icon-link">
-                        <a href="%s" target="_blank" role="button"  aria-label="Open All %s in a new window">
+                        <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
                             <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
                         </a>
@@ -224,6 +230,8 @@ class Menu_Handler {
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
                 sprintf(__('My %s', 'dynamic-post-type-menu'), $plural_label),
                 esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
+                $plural_label,
+                $plural_label,
                 $plural_label,
                 __('Open in New Window', 'dynamic-post-type-menu'),
                 esc_url($new_window_icon_url)
@@ -247,7 +255,7 @@ class Menu_Handler {
                         <a href="%s">%s</a>
 					</div>
                     <div class="icon-link">
-                        <a href="%s" target="_blank" role="button"  aria-label="Open All %s in a new window">
+                        <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
                             <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
                         </a>
@@ -256,6 +264,8 @@ class Menu_Handler {
                 esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
                 $add_new_label,
                 esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                $plural_label,
+                $plural_label,
                 $plural_label,
                 __('Open in New Window', 'dynamic-post-type-menu'),
                 esc_url($new_window_icon_url)
