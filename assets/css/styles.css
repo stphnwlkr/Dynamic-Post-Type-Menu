@@ -13,10 +13,11 @@ ul:has(.menu-item-flex){
 	margin:0;
 	margin-block:4px;
 }
-/* Flexbox layout for the menu items */
+
 .menu-item-flex {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+   grid-template-columns:1fr 28px;
+	align-self:center
     align-items: center; 
 	margin-block-end:4px;
 }
