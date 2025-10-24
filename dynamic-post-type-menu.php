@@ -1,4 +1,4 @@
-`<?php
+<?php
 /**
  * Plugin Name: Dynamic Post Type Menu
  * Description: Adds a dropdown menu to the admin bar with links to all post types and their author-specific listings.
