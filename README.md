@@ -16,10 +16,14 @@ Content Types
   - My [Other Post Types]
   - New [Other Post Yype]
 
+# 1.6 New Window Link
+
+Change image to css-based SVG for improved size consistency
 
 # 1.5 New Window Link
 
 Added an "Open in new window" link and stylesheet
+
 
 ## Updates
 - Refactored for PHP 8

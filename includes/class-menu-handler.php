@@ -128,7 +128,7 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open All %s in a new window" title="%s → Open All %s in a new tab">
                             <span class="sr-only">%s</span>
-                            <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
+                            
                         </a>
 					</div>
                  </div>',
@@ -156,7 +156,7 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
-                            <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
+                            
                         </a>
 					</div>
                  </div>',
@@ -190,7 +190,7 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
-                            <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
+                            
                         </a>
 					</div>
                  </div>',
@@ -223,7 +223,7 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
-                            <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
+                            
                         </a>
 					</div>
                  </div>',
@@ -257,7 +257,7 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
-                            <img src="%s" alt="" aria-hidden="true" class="new-window-icon">
+                            
                         </a>
 					</div>
                  </div>',
