@@ -24,6 +24,10 @@ Change image to css-based SVG for improved size consistency
 
 Added an "Open in new window" link and stylesheet
 
+# 1.6 New menu items
+
+Support for ACF, Meta Box and WPCodeBox when installed and active
+
 
 ## Updates
 - Refactored for PHP 8
