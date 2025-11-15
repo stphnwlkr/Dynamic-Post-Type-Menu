@@ -16,6 +16,10 @@ Content Types
   - My [Other Post Types]
   - New [Other Post Yype]
 
+# 1.7 New menu items
+
+Support for ACF, Meta Box and WPCodeBox when installed and active
+
 # 1.6 New Window Link
 
 Change image to css-based SVG for improved size consistency
@@ -24,9 +28,7 @@ Change image to css-based SVG for improved size consistency
 
 Added an "Open in new window" link and stylesheet
 
-# 1.6 New menu items
 
-Support for ACF, Meta Box and WPCodeBox when installed and active
 
 
 ## Updates
