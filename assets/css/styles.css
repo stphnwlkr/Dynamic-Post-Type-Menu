@@ -23,7 +23,15 @@ ul:has(.menu-item-flex){
 		padding-inline:4px;
 	}
 }
+.quicklinks #wp-admin-bar-wpcodebox-link .menu-item-flex {
 
+	& a{
+    padding-inline-start: 0 !important;
+}
+	& .icon-link{
+		padding-inline-start: 10px;
+	}
+}
 .icon-link{
 	opacity:.65;
 	position:relative!important;
@@ -56,3 +64,4 @@ ul:has(.menu-item-flex){
 	  margin-inline-start:5px;
   }
 }
+

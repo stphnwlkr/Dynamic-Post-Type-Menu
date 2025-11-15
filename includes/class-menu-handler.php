@@ -7,7 +7,7 @@ class Menu_Handler {
 
     public function __construct() {
         // Hook into the admin bar to add the menu (for both admin and front-end)
-        add_action('admin_bar_menu', [$this, 'add_post_type_menu'], 71);
+        add_action( 'admin_bar_menu', [ $this, 'add_post_type_menu' ], 71 );
     }
 
     /**
@@ -15,109 +15,127 @@ class Menu_Handler {
      *
      * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
      */
-    public function add_post_type_menu(WP_Admin_Bar $wp_admin_bar): void {
+    public function add_post_type_menu( WP_Admin_Bar $wp_admin_bar ): void {
         // Only display to users who can edit posts or have author/contributor capabilities
-        if (!current_user_can('edit_posts') && !current_user_can('edit_others_posts')) {
+        if ( ! current_user_can( 'edit_posts' ) && ! current_user_can( 'edit_others_posts' ) ) {
             return;
         }
 
         // Path to the icon file
-        $icon_url = plugin_dir_url(__FILE__) . '../assets/img/icons/note-edit-stroke-standard.svg';
-        $new_window_icon_url = plugin_dir_url(__FILE__) . '../assets/img/icons/new-window-link.svg';
+        $icon_url            = plugin_dir_url( __FILE__ ) . '../assets/img/icons/note-edit-stroke-standard.svg';
+        $new_window_icon_url = plugin_dir_url( __FILE__ ) . '../assets/img/icons/new-window-link.svg';
 
         // Add the parent menu item with an icon
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'id'    => 'post-types',
             'title' => sprintf(
                 '<img src="%s" alt="Icon" style="margin-right: 5px; height: 16px; vertical-align: middle;">%s',
-                esc_url($icon_url),
-                __('Content Types', 'dynamic-post-type-menu')
+                esc_url( $icon_url ),
+                esc_html__( 'Content Types', 'dynamic-post-type-menu' )
             ),
             'href'  => false,
-            'meta'  => ['class' => 'menupop'],
-        ]);
+            'meta'  => [ 'class' => 'menupop' ],
+        ] );
 
         // Get all public post types
-        $post_types = get_post_types(['public' => true], 'objects');
+        $post_types = get_post_types( [ 'public' => true ], 'objects' );
 
         // Separate default post types (Posts and Pages) and Bricks Templates from others
-        [$default_post_types, $other_post_types] = $this->categorize_post_types($post_types);
+        [ $default_post_types, $other_post_types ] = $this->categorize_post_types( $post_types );
 
         // First add Posts, Pages, and Bricks Templates
-        foreach ($default_post_types as $post_type) {
-            $this->add_role_based_menus($wp_admin_bar, $post_type, $new_window_icon_url);
+        foreach ( $default_post_types as $post_type ) {
+            $this->add_role_based_menus( $wp_admin_bar, $post_type, $new_window_icon_url );
         }
 
         // Sort other post types alphabetically by label and add them
-        usort($other_post_types, fn($a, $b) => strcmp($a->labels->name, $b->labels->name));
+        usort(
+            $other_post_types,
+            static fn( $a, $b ) => strcmp( $a->labels->name, $b->labels->name )
+        );
 
-        foreach ($other_post_types as $post_type) {
-            $this->add_role_based_menus($wp_admin_bar, $post_type, $new_window_icon_url);
+        foreach ( $other_post_types as $post_type ) {
+            $this->add_role_based_menus( $wp_admin_bar, $post_type, $new_window_icon_url );
         }
+
+        // ACF menu (if ACF is active) – appears before Meta Box & WPCodeBox
+        $this->add_acf_menu_item( $wp_admin_bar, $new_window_icon_url );
+
+        // Meta Box menu (if Meta Box is active) – appears before WPCodeBox
+        $this->add_metabox_menu_item( $wp_admin_bar, $new_window_icon_url );
+
+        // Add WPCodeBox link at the end
+        $this->add_wpcodebox_menu_item( $wp_admin_bar, $new_window_icon_url );
     }
 
     /**
      * Categorize post types into default types (Posts, Pages, Bricks Templates) and others.
      */
-    private function categorize_post_types(array $post_types): array {
+    private function categorize_post_types( array $post_types ): array {
         $default_post_types = [];
-        $other_post_types = [];
+        $other_post_types   = [];
 
-        foreach ($post_types as $post_type) {
-            $post_type->labels->name = match ($post_type->name) {
-                'post' => 'Posts',
-                'page' => 'Pages',
+        foreach ( $post_types as $post_type ) {
+            $post_type->labels->name = match ( $post_type->name ) {
+                'post'            => 'Posts',
+                'page'            => 'Pages',
                 'bricks_template' => 'Bricks Templates',  // Rename for Bricks Templates (but not "Add New")
-                'attachment' => 'Media',  // Special case for Media
-                default => $post_type->labels->name,
+                'attachment'      => 'Media',             // Special case for Media
+                default           => $post_type->labels->name,
             };
 
-            if (in_array($post_type->name, ['post', 'page', 'bricks_template'], true)) {
-                $default_post_types[$post_type->name] = $post_type;
+            if ( in_array( $post_type->name, [ 'post', 'page', 'bricks_template' ], true ) ) {
+                $default_post_types[ $post_type->name ] = $post_type;
             } else {
-                $other_post_types[$post_type->name] = $post_type;
+                $other_post_types[ $post_type->name ] = $post_type;
             }
         }
 
-        return [$default_post_types, $other_post_types];
+        return [ $default_post_types, $other_post_types ];
     }
 
     /**
      * Adds submenus for a specific post type based on user role.
      *
      * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
-     * @param object $post_type The post type object.
-     * @param string $new_window_icon_url The URL of the new window icon.
+     * @param object       $post_type    The post type object.
+     * @param string       $new_window_icon_url The URL of the new window icon.
      */
-    private function add_role_based_menus(WP_Admin_Bar $wp_admin_bar, object $post_type, string $new_window_icon_url): void {
+    private function add_role_based_menus( WP_Admin_Bar $wp_admin_bar, object $post_type, string $new_window_icon_url ): void {
         // Sanitize the post type name for use in HTML classes and IDs
-        $post_type_slug = sanitize_html_class($post_type->name);
-        $plural_label = esc_html($post_type->labels->name);
+        $post_type_slug = sanitize_html_class( $post_type->name );
+        $plural_label   = esc_html( $post_type->labels->name );
 
         // Handle role-based menu items for Admins/Editors and Authors/Contributors
-        if (current_user_can('edit_others_posts')) {
+        if ( current_user_can( 'edit_others_posts' ) ) {
             // Add 'All', 'My', and 'Add New' submenus for Admins and Editors
-            $this->add_all_my_and_new_submenus($wp_admin_bar, $post_type_slug, $plural_label, $post_type->name, $new_window_icon_url);
-        } elseif (current_user_can('edit_posts')) {
+            $this->add_all_my_and_new_submenus( $wp_admin_bar, $post_type_slug, $plural_label, $post_type->name, $new_window_icon_url );
+        } elseif ( current_user_can( 'edit_posts' ) ) {
             // Add 'My' and 'Add New' submenus for Authors and Contributors
-            $this->add_my_and_new_submenus($wp_admin_bar, $post_type_slug, $plural_label, $post_type->name, $new_window_icon_url);
+            $this->add_my_and_new_submenus( $wp_admin_bar, $post_type_slug, $plural_label, $post_type->name, $new_window_icon_url );
         }
     }
 
     /**
      * Add 'All', 'My', and 'Add New' submenus for Admins and Editors
      */
-    private function add_all_my_and_new_submenus(WP_Admin_Bar $wp_admin_bar, string $post_type_slug, string $plural_label, string $post_type_name, string $new_window_icon_url): void {
+    private function add_all_my_and_new_submenus(
+        WP_Admin_Bar $wp_admin_bar,
+        string $post_type_slug,
+        string $plural_label,
+        string $post_type_name,
+        string $new_window_icon_url
+    ): void {
         // Add the main post type menu item
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-types',
             'id'     => 'post-type-' . $post_type_slug,
             'title'  => $plural_label,
             'href'   => false,
-        ]);
+        ] );
 
         // Add 'All' submenu
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-type-' . $post_type_slug,
             'id'     => 'all-' . $post_type_slug,
             'title'  => sprintf(
@@ -128,24 +146,22 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open All %s in a new window" title="%s → Open All %s in a new tab">
                             <span class="sr-only">%s</span>
-                            
                         </a>
 					</div>
                  </div>',
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}")),
-                sprintf(__('All %s', 'dynamic-post-type-menu'), $plural_label),
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}")),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}" ) ),
+                sprintf( esc_html__( 'All %s', 'dynamic-post-type-menu' ), $plural_label ),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}" ) ),
                 $plural_label,
                 $plural_label,
                 $plural_label,
-                __('Open in New Window', 'dynamic-post-type-menu'),
-                esc_url($new_window_icon_url)
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' )
             ),
             'href'   => false,
-        ]);
+        ] );
 
         // Add 'My' submenu
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-type-' . $post_type_slug,
             'id'     => 'my-' . $post_type_slug,
             'title'  => sprintf(
@@ -156,30 +172,28 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
-                            
                         </a>
 					</div>
                  </div>',
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
-                sprintf(__('My %s', 'dynamic-post-type-menu'), $plural_label),
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}&author=" . get_current_user_id() ) ),
+                sprintf( esc_html__( 'My %s', 'dynamic-post-type-menu' ), $plural_label ),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}&author=" . get_current_user_id() ) ),
                 $plural_label,
                 $plural_label,
                 $plural_label,
-                __('Open in New Window', 'dynamic-post-type-menu'),
-                esc_url($new_window_icon_url)
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' )
             ),
             'href'   => false,
-        ]);
+        ] );
 
         // Add 'Add New' submenu
-        $add_new_label = ($post_type_name === 'attachment')
-            ? __('Add New Media', 'dynamic-post-type-menu')
-            : (($post_type_name === 'bricks_template')
-                ? __('Add New Bricks Template', 'dynamic-post-type-menu')  // No renaming for Bricks Templates here
-                : sprintf(__('Add New %s', 'dynamic-post-type-menu'), $plural_label));
+        $add_new_label = ( 'attachment' === $post_type_name )
+            ? esc_html__( 'Add New Media', 'dynamic-post-type-menu' )
+            : ( 'bricks_template' === $post_type_name
+                ? esc_html__( 'Add New Bricks Template', 'dynamic-post-type-menu' )  // No renaming for Bricks Templates here
+                : sprintf( esc_html__( 'Add New %s', 'dynamic-post-type-menu' ), $plural_label ) );
 
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-type-' . $post_type_slug,
             'id'     => 'add-new-' . $post_type_slug,
             'title'  => sprintf(
@@ -190,29 +204,33 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
-                            
                         </a>
 					</div>
                  </div>',
-                esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                esc_url( admin_url( "post-new.php?post_type={$post_type_slug}" ) ),
                 $add_new_label,
-                esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                esc_url( admin_url( "post-new.php?post_type={$post_type_slug}" ) ),
                 $plural_label,
                 $plural_label,
                 $plural_label,
-                __('Open in New Window', 'dynamic-post-type-menu'),
-                esc_url($new_window_icon_url)
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' )
             ),
             'href'   => false,
-        ]);
+        ] );
     }
 
     /**
      * Add 'My' and 'Add New' submenus for Authors and Contributors
      */
-    private function add_my_and_new_submenus(WP_Admin_Bar $wp_admin_bar, string $post_type_slug, string $plural_label, string $post_type_name, string $new_window_icon_url): void {
+    private function add_my_and_new_submenus(
+        WP_Admin_Bar $wp_admin_bar,
+        string $post_type_slug,
+        string $plural_label,
+        string $post_type_name,
+        string $new_window_icon_url
+    ): void {
         // Add 'My' submenu
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-types',
             'id'     => 'my-' . $post_type_slug,
             'title'  => sprintf(
@@ -223,30 +241,28 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open My %s in a new window" title="%s → Open My %s in a new tab">
                             <span class="sr-only">%s</span>
-                            
                         </a>
 					</div>
                  </div>',
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
-                sprintf(__('My %s', 'dynamic-post-type-menu'), $plural_label),
-                esc_url(admin_url("edit.php?post_type={$post_type_slug}&author=" . get_current_user_id())),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}&author=" . get_current_user_id() ) ),
+                sprintf( esc_html__( 'My %s', 'dynamic-post-type-menu' ), $plural_label ),
+                esc_url( admin_url( "edit.php?post_type={$post_type_slug}&author=" . get_current_user_id() ) ),
                 $plural_label,
                 $plural_label,
                 $plural_label,
-                __('Open in New Window', 'dynamic-post-type-menu'),
-                esc_url($new_window_icon_url)
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' )
             ),
             'href'   => false,
-        ]);
+        ] );
 
         // Add 'Add New' submenu
-        $add_new_label = ($post_type_name === 'attachment')
-            ? __('Add New Media', 'dynamic-post-type-menu')
-            : (($post_type_name === 'bricks_template')
-                ? __('Add New Bricks Template', 'dynamic-post-type-menu')  // No renaming for Bricks Templates here
-                : sprintf(__('Add New %s', 'dynamic-post-type-menu'), $plural_label));
+        $add_new_label = ( 'attachment' === $post_type_name )
+            ? esc_html__( 'Add New Media', 'dynamic-post-type-menu' )
+            : ( 'bricks_template' === $post_type_name
+                ? esc_html__( 'Add New Bricks Template', 'dynamic-post-type-menu' )  // No renaming for Bricks Templates here
+                : sprintf( esc_html__( 'Add New %s', 'dynamic-post-type-menu' ), $plural_label ) );
 
-        $wp_admin_bar->add_node([
+        $wp_admin_bar->add_node( [
             'parent' => 'post-types',
             'id'     => 'add-new-' . $post_type_slug,
             'title'  => sprintf(
@@ -257,20 +273,264 @@ class Menu_Handler {
                     <div class="icon-link">
                         <a href="%s" target="_blank" role="button" aria-label="Open Add New %s in a new window" title="%s → Open Add New %s in a new tab">
                             <span class="sr-only">%s</span>
-                            
                         </a>
 					</div>
                  </div>',
-                esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                esc_url( admin_url( "post-new.php?post_type={$post_type_slug}" ) ),
                 $add_new_label,
-                esc_url(admin_url("post-new.php?post_type={$post_type_slug}")),
+                esc_url( admin_url( "post-new.php?post_type={$post_type_slug}" ) ),
                 $plural_label,
                 $plural_label,
                 $plural_label,
-                __('Open in New Window', 'dynamic-post-type-menu'),
-                esc_url($new_window_icon_url)
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' )
             ),
             'href'   => false,
-        ]);
+        ] );
+    }
+
+    /**
+     * Add WPCodeBox link as the last item under "Content Types" if the plugin is active.
+     */
+    private function add_wpcodebox_menu_item( WP_Admin_Bar $wp_admin_bar, string $new_window_icon_url ): void {
+        if ( ! $this->is_wpcodebox_active() ) {
+            return;
+        }
+
+        $label = 'WPCodeBox';
+        $url   = admin_url( 'admin.php?page=wpcodebox2' );
+
+        $wp_admin_bar->add_node( [
+            'parent' => 'post-types',
+            'id'     => 'wpcodebox-link',
+            'href'   => false,
+            'title'  => sprintf(
+                '<div class="menu-item-flex">
+                    <div>
+                        <a href="%s">%s</a>
+                    </div>
+                    <div class="icon-link">
+                        <a href="%s"
+                           target="_blank"
+                           role="button"
+                           aria-label="Open WPCodeBox in a new window"
+                           title="WPCodeBox → Open in a new tab">
+                            <span class="sr-only">%s</span>
+                            <img src="%s" alt="">
+                        </a>
+                    </div>
+                </div>',
+                esc_url( $url ),
+                esc_html( $label ),
+                esc_url( $url ),
+                esc_html__( 'Open in New Window', 'dynamic-post-type-menu' ),
+                esc_url( $new_window_icon_url )
+            ),
+        ] );
+    }
+
+    /**
+     * Check if WPCodeBox plugin is active.
+     */
+    private function is_wpcodebox_active(): bool {
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Try a few likely main plugin file paths. Adjust if your setup differs.
+        $candidates = [
+            'wpcodebox2/wpcodebox2.php',
+            'wpcodebox2/wpcodebox.php',
+            'wpcodebox/wpcodebox2.php',
+            'wpcodebox/wpcodebox.php',
+        ];
+
+        foreach ( $candidates as $plugin_file ) {
+            if ( \is_plugin_active( $plugin_file ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Add ACF tools menu (with submenus) under "Content Types" if ACF is active.
+     */
+    private function add_acf_menu_item( WP_Admin_Bar $wp_admin_bar, string $new_window_icon_url ): void {
+        if ( ! $this->is_acf_active() ) {
+            return;
+        }
+
+        // Parent "ACF" node
+        $wp_admin_bar->add_node( [
+            'parent' => 'post-types',
+            'id'     => 'acf-menu',
+            'title'  => esc_html__( 'ACF', 'dynamic-post-type-menu' ),
+            'href'   => false,
+        ] );
+
+        // Define the sub-items: label => URL
+        $items = [
+            'Field Groups'   => admin_url( 'edit.php?post_type=acf-field-group' ),
+            'Post Types'     => admin_url( 'edit.php?post_type=acf-post-type' ),
+            'Taxonomies'     => admin_url( 'edit.php?post_type=acf-taxonomy' ),
+            'Options Pages'  => admin_url( 'edit.php?post_type=acf-ui-options-page' ),
+        ];
+
+        foreach ( $items as $label => $url ) {
+            $id_slug = sanitize_title( $label );
+
+            $wp_admin_bar->add_node( [
+                'parent' => 'acf-menu',
+                'id'     => 'acf-' . $id_slug,
+                'href'   => false,
+                'title'  => sprintf(
+                    '<div class="menu-item-flex">
+                        <div>
+                            <a href="%s">%s</a>
+                        </div>
+                        <div class="icon-link">
+                            <a href="%s"
+                               target="_blank"
+                               role="button"
+                               aria-label="%s"
+                               title="%s">
+                                <span class="sr-only">%s</span>
+                                <img src="%s" alt="">
+                            </a>
+                        </div>
+                    </div>',
+                    esc_url( $url ),
+                    esc_html( $label ),
+                    esc_url( $url ),
+                    esc_attr( sprintf(
+                        /* translators: %s = ACF item label */
+                        __( 'Open %s in a new window', 'dynamic-post-type-menu' ),
+                        $label
+                    ) ),
+                    esc_attr( sprintf(
+                        /* translators: %s = ACF item label */
+                        __( '%s → Open in a new tab', 'dynamic-post-type-menu' ),
+                        $label
+                    ) ),
+                    esc_html__( 'Open in New Window', 'dynamic-post-type-menu' ),
+                    esc_url( $new_window_icon_url )
+                ),
+            ] );
+        }
+    }
+
+    /**
+     * Detect if ACF is active.
+     */
+    private function is_acf_active(): bool {
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Core ACF & ACF Pro
+        $candidates = [
+            'advanced-custom-fields/acf.php',
+            'advanced-custom-fields-pro/acf.php',
+        ];
+
+        foreach ( $candidates as $plugin_file ) {
+            if ( \is_plugin_active( $plugin_file ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Add Meta Box tools menu (with submenus) under "Content Types" if Meta Box is active.
+     */
+    private function add_metabox_menu_item( WP_Admin_Bar $wp_admin_bar, string $new_window_icon_url ): void {
+        if ( ! $this->is_metabox_active() ) {
+            return;
+        }
+
+        // Parent "Meta Box" node
+        $wp_admin_bar->add_node( [
+            'parent' => 'post-types',
+            'id'     => 'metabox-menu',
+            'title'  => esc_html__( 'Meta Box', 'dynamic-post-type-menu' ),
+            'href'   => false,
+        ] );
+
+        // Define the sub-items: label => URL
+        $items = [
+            'Post Types'     => admin_url( 'edit.php?post_type=mb-post-type' ),
+            'Taxonomies'     => admin_url( 'edit.php?post_type=mb-taxonomy' ),
+            'Custom Fields'  => admin_url( 'edit.php?post_type=meta-box' ),
+            'Settings Pages' => admin_url( 'edit.php?post_type=mb-settings-page' ),
+            'Relationships'  => admin_url( 'edit.php?post_type=mb-relationship' ),
+        ];
+
+        foreach ( $items as $label => $url ) {
+            $id_slug = sanitize_title( $label );
+
+            $wp_admin_bar->add_node( [
+                'parent' => 'metabox-menu',
+                'id'     => 'metabox-' . $id_slug,
+                'href'   => false,
+                'title'  => sprintf(
+                    '<div class="menu-item-flex">
+                        <div>
+                            <a href="%s">%s</a>
+                        </div>
+                        <div class="icon-link">
+                            <a href="%s"
+                               target="_blank"
+                               role="button"
+                               aria-label="%s"
+                               title="%s">
+                                <span class="sr-only">%s</span>
+                                <img src="%s" alt="">
+                            </a>
+                        </div>
+                    </div>',
+                    esc_url( $url ),
+                    esc_html( $label ),
+                    esc_url( $url ),
+                    esc_attr( sprintf(
+                        /* translators: %s = Meta Box item label */
+                        __( 'Open %s in a new window', 'dynamic-post-type-menu' ),
+                        $label
+                    ) ),
+                    esc_attr( sprintf(
+                        /* translators: %s = Meta Box item label */
+                        __( '%s → Open in a new tab', 'dynamic-post-type-menu' ),
+                        $label
+                    ) ),
+                    esc_html__( 'Open in New Window', 'dynamic-post-type-menu' ),
+                    esc_url( $new_window_icon_url )
+                ),
+            ] );
+        }
+    }
+
+    /**
+     * Detect if Meta Box is active.
+     */
+    private function is_metabox_active(): bool {
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        // Adjust this list to match the Meta Box plugins you actually use.
+        $candidates = [
+            'meta-box/meta-box.php',        // Core Meta Box
+            'meta-box-aio/meta-box-aio.php' // Meta Box AIO (optional)
+        ];
+
+        foreach ( $candidates as $plugin_file ) {
+            if ( \is_plugin_active( $plugin_file ) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
