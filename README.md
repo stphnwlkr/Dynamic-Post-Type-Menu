@@ -18,6 +18,9 @@ Content Types
 
 # 1.7 New menu items
 
+<img width="169" height="168" alt="image" src="https://github.com/user-attachments/assets/4eea5ec4-8a31-4d08-ab18-327481d1b369" />
+
+
 Support for ACF, Meta Box and WPCodeBox when installed and active
 
 # 1.6 New Window Link
