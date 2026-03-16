@@ -12,6 +12,8 @@ Adds a configurable **Content Types** menu to the WordPress admin bar.
   - hide the WordPress **+ New** admin bar menu
   - choose which post types appear in the **Content Types** menu
   - choose which feature items appear in the **Content Types** menu
+<img width="169" height="168" alt="image" src="https://github.com/user-attachments/assets/4eea5ec4-8a31-4d08-ab18-327481d1b369" />
+
 
 ## Notes
 
