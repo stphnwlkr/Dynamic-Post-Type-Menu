@@ -26,3 +26,6 @@ When **Remove the built-in Posts post type** is enabled, the plugin hides the de
 - Added optional hiding of the WordPress + New menu
 - Added controls for which post types appear in Content Types
 - Added controls for which feature items appear in Content Types
+
+  <img width="1150" height="922" alt="image" src="https://github.com/user-attachments/assets/542544f0-cbc6-4ac1-906e-3b088a8b4d17" />
+
