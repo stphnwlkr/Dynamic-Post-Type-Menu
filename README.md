@@ -1,38 +1,26 @@
 # Dynamic Post Type Menu
- 
-This plugin adds a dropdown menu to the admin bar, creating quick access to all post types. If you are an admin or editor, you get all and my variations, and authors and contributors only see the "My Name of Post Type" option. Post types are presented in alphabetical order after the core Posts and Pages.
 
-Content Types
-- Posts
-  - All Posts
-  - My Posts
-  - New Post
-- Pages
-  - All Pages
-  - My Pages
-  - New Page
-- [Other Post Types...]
-  - All [Other Post Types]
-  - My [Other Post Types]
-  - New [Other Post Yype]
+Adds a configurable **Content Types** menu to the WordPress admin bar.
 
-# 1.7 New menu items
+## Features
 
-Support for ACF, Meta Box and WPCodeBox when installed and active
+- Quick links for enabled public post types
+- Role-aware menu items for **All**, **My**, and **Add New**
+- Optional menu items for **ACF**, **Meta Box**, and **WPCodeBox** when active
+- Settings screen to:
+  - remove the default **Posts** post type from the admin UI
+  - hide the WordPress **+ New** admin bar menu
+  - choose which post types appear in the **Content Types** menu
+  - choose which feature items appear in the **Content Types** menu
 
-# 1.6 New Window Link
+## Notes
 
-Change image to css-based SVG for improved size consistency
+When **Remove the built-in Posts post type** is enabled, the plugin hides the default Posts menu and blocks direct admin access to the default Posts list, add-new screen, and edit screen. This does **not** unregister WordPress core's built-in `post` post type.
 
-# 1.5 New Window Link
+## Version 1.8.1
 
-Added an "Open in new window" link and stylesheet
-
-
-
-
-## Updates
-- Refactored for PHP 8
-- Added "New Content" option
-- Bricks Builder My Templates renamed to Bricks Templates
-
+- Added plugin settings page
+- Added optional removal of default Posts screens from wp-admin
+- Added optional hiding of the WordPress + New menu
+- Added controls for which post types appear in Content Types
+- Added controls for which feature items appear in Content Types
