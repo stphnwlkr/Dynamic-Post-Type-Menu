@@ -16,13 +16,22 @@ ul:has(.menu-item-flex){
 
 .menu-item-flex {
     display: grid;
-   grid-template-columns:1fr 28px;
+   grid-template-columns:1fr 25px;
+	width:100%!important;
     align-items: center; 
 	margin-block-end:4px;
 	& a{
 		padding-inline:4px;
 	}
 }
+#wpadminbar .quicklinks .ab-empty-item, #wpadminbar .quicklinks a, #wpadminbar .shortlink-input {
+    height: 32px;
+    display: flex;
+    padding: 0 10px;
+    margin: 0;
+    align-items: center;
+}
+
 .quicklinks #wp-admin-bar-wpcodebox-link .menu-item-flex {
 
 	& a{
@@ -64,4 +73,3 @@ ul:has(.menu-item-flex){
 	  margin-inline-start:5px;
   }
 }
-
