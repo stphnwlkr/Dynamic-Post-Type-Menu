@@ -2,11 +2,11 @@
 /**
  * Plugin Name: Dynamic Post Type Menu
  * Description: Adds a configurable Content Types admin bar menu with post type links and optional integrations for ACF, Meta Box, and WPCodeBox.
- * Version: 1.8.1
+ * Version: 1.8.2
  * Author: Stephen Walker
 
  * Requires at least: 6.8.5
- * Tested up to: 7.0 beta 5
+ * Tested up to: 7.0 RC2
  * Author URI: https://fwcafe.com/
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.txt

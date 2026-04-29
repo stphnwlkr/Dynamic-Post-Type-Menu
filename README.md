@@ -19,6 +19,9 @@ Adds a configurable **Content Types** menu to the WordPress admin bar.
 
 When **Remove the built-in Posts post type** is enabled, the plugin hides the default Posts menu and blocks direct admin access to the default Posts list, add-new screen, and edit screen. This does **not** unregister WordPress core's built-in `post` post type.
 
+## Version 1.8.2
+ - Remove loading of assets when not logged in
+
 ## Version 1.8.1
 
 - Added plugin settings page
