@@ -43,15 +43,17 @@ function dynamic_post_type_menu_enqueue_admin_styles(): void {
 add_action( 'admin_enqueue_scripts', 'dynamic_post_type_menu_enqueue_admin_styles' );
 
 function dynamic_post_type_menu_enqueue_frontend_styles(): void {
-    if ( ! is_admin() ) {
-        wp_enqueue_style(
-            'dynamic-post-type-menu-style',
-            plugins_url( 'assets/css/styles.css', __FILE__ ),
-            [],
-            filemtime( plugin_dir_path( __FILE__ ) . 'assets/css/styles.css' )
-        );
+    if ( ! is_user_logged_in() || ! is_admin_bar_showing() ) {
+        return;
     }
+    wp_enqueue_style(
+        'dynamic-post-type-menu-style',
+        plugins_url( 'assets/css/styles.css', __FILE__ ),
+        [],
+        filemtime( plugin_dir_path( __FILE__ ) . 'assets/css/styles.css' )
+    );
 }
+
 add_action( 'wp_enqueue_scripts', 'dynamic_post_type_menu_enqueue_frontend_styles' );
 
 function dynamic_post_type_menu_activate(): void {
