@@ -1,6 +1,10 @@
 <?php
 namespace Dynamic_Post_Type_Menu;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Admin settings and admin-only restrictions.
  */
@@ -194,81 +198,95 @@ class Admin_Settings {
         );
         ?>
         <div class="wrap dptm-settings">
-            <h1><?php echo esc_html__( 'Dynamic Post Type Menu', 'dynamic-post-type-menu' ); ?></h1>
-            <p><?php echo esc_html__( 'Control whether the default Posts post type is available, whether the WordPress + New menu is shown, and which items appear in the Content Types menu.', 'dynamic-post-type-menu' ); ?></p>
-
             <form action="options.php" method="post">
                 <?php settings_fields( 'dynamic_post_type_menu_settings' ); ?>
 
-                <table class="form-table" role="presentation">
-                    <tbody>
-                        <tr>
-                            <th scope="row"><?php echo esc_html__( 'Default Posts', 'dynamic-post-type-menu' ); ?></th>
-                            <td>
-                                <label>
-                                    <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[remove_default_posts]" value="1" <?php checked( 1, $options['remove_default_posts'] ); ?>>
-                                    <?php echo esc_html__( 'Remove the built-in Posts post type from the admin UI and block direct admin access to it.', 'dynamic-post-type-menu' ); ?>
-                                </label>
-                                <p class="description"><?php echo esc_html__( 'This hides the default Posts screens in wp-admin. It does not unregister the built-in post type from WordPress core.', 'dynamic-post-type-menu' ); ?></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><?php echo esc_html__( 'WP + New menu', 'dynamic-post-type-menu' ); ?></th>
-                            <td>
-                                <label>
-                                    <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[hide_wp_new_menu]" value="1" <?php checked( 1, $options['hide_wp_new_menu'] ); ?>>
-                                    <?php echo esc_html__( 'Hide the WordPress + New admin bar menu.', 'dynamic-post-type-menu' ); ?>
-                                </label>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="dptm-settings__hero">
+                    <div class="dptm-settings__hero-content">
+                        <p class="dptm-settings__eyebrow"><?php echo esc_html__( 'WordPress Admin Bar Tools', 'dynamic-post-type-menu' ); ?></p>
+                        <h1 class="dptm-settings__title">
+                            <span class="dptm-settings__icon" aria-hidden="true"></span>
+                            <?php echo esc_html__( 'Dynamic Post Type Menu', 'dynamic-post-type-menu' ); ?>
+                        </h1>
+                        <p><?php echo esc_html__( 'Control whether the default Posts post type is available, whether the WordPress + New menu is shown, and which items appear in the Content Types panel.', 'dynamic-post-type-menu' ); ?></p>
+                    </div>
+                </div>
 
-                <h2><?php echo esc_html__( 'Content Types menu: post types', 'dynamic-post-type-menu' ); ?></h2>
-                <p><?php echo esc_html__( 'Choose which content post types appear in the Content Types admin bar menu. Plugin-managed items like ACF and Meta Box are controlled below under Features.', 'dynamic-post-type-menu' ); ?></p>
-                <fieldset>
-                    <?php foreach ( $post_types as $post_type ) : ?>
-                        <?php
-                        $label = $post_type->labels->name;
-                        if ( 'bricks_template' === $post_type->name ) {
-                            $label = __( 'Bricks Templates', 'dynamic-post-type-menu' );
-                        } elseif ( 'attachment' === $post_type->name ) {
-                            $label = __( 'Media', 'dynamic-post-type-menu' );
-                        } elseif ( 'post' === $post_type->name ) {
-                            $label = __( 'Posts', 'dynamic-post-type-menu' );
-                        } elseif ( 'page' === $post_type->name ) {
-                            $label = __( 'Pages', 'dynamic-post-type-menu' );
-                        }
+                <div class="dptm-settings__grid">
+                    <section class="dptm-settings__card" aria-labelledby="dptm-cleanup-heading">
+                        <h2 id="dptm-cleanup-heading"><?php echo esc_html__( 'Plugin cleanup', 'dynamic-post-type-menu' ); ?></h2>
 
-                        $is_checked = empty( $options['enabled_post_types'] ) || in_array( $post_type->name, $options['enabled_post_types'], true );
-                        ?>
-                        <label style="display:block; margin-block-end:8px;">
-                            <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enabled_post_types][]" value="<?php echo esc_attr( $post_type->name ); ?>" <?php checked( true, $is_checked ); ?>>
-                            <?php echo esc_html( $label ); ?>
-                            <code><?php echo esc_html( $post_type->name ); ?></code>
+                        <label class="dptm-settings__toggle">
+                            <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[remove_default_posts]" value="1" <?php checked( 1, $options['remove_default_posts'] ); ?>>
+                            <span><?php echo esc_html__( 'Remove the built-in Posts post type from the admin UI and block direct admin access to it.', 'dynamic-post-type-menu' ); ?></span>
                         </label>
-                    <?php endforeach; ?>
-                </fieldset>
+                        <p class="description"><?php echo esc_html__( 'This hides the default Posts screens in wp-admin. It does not unregister the built-in post type from WordPress core.', 'dynamic-post-type-menu' ); ?></p>
 
-                <h2><?php echo esc_html__( 'Content Types menu: features', 'dynamic-post-type-menu' ); ?></h2>
-                <p><?php echo esc_html__( 'Choose which plugin-related items appear in the Content Types menu. All are enabled by default.', 'dynamic-post-type-menu' ); ?></p>
-                <fieldset>
-                    <?php
-                    $features = [
-                        'acf'       => __( 'ACF', 'dynamic-post-type-menu' ),
-                        'metabox'   => __( 'Meta Box', 'dynamic-post-type-menu' ),
-                        'wpcodebox' => __( 'WPCodeBox', 'dynamic-post-type-menu' ),
-                    ];
-                    ?>
-                    <?php foreach ( $features as $feature_key => $feature_label ) : ?>
-                        <label style="display:block; margin-block-end:8px;">
-                            <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enabled_features][<?php echo esc_attr( $feature_key ); ?>]" value="1" <?php checked( 1, $options['enabled_features'][ $feature_key ] ?? 0 ); ?>>
-                            <?php echo esc_html( $feature_label ); ?>
-                        </label>
-                    <?php endforeach; ?>
-                </fieldset>
+                        <div class="dptm-settings__cleanup-group">
+                            <h3><?php echo esc_html__( 'WP + New menu', 'dynamic-post-type-menu' ); ?></h3>
+                            <label class="dptm-settings__toggle">
+                                <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[hide_wp_new_menu]" value="1" <?php checked( 1, $options['hide_wp_new_menu'] ); ?>>
+                                <span><?php echo esc_html__( 'Hide the WordPress + New admin bar menu.', 'dynamic-post-type-menu' ); ?></span>
+                            </label>
+                        </div>
+                    </section>
 
-                <?php submit_button(); ?>
+                    <section class="dptm-settings__card" aria-labelledby="dptm-features-heading">
+                        <h2 id="dptm-features-heading"><?php echo esc_html__( 'Feature links', 'dynamic-post-type-menu' ); ?></h2>
+                        <p><?php echo esc_html__( 'Choose which plugin-related items appear in the Content Types panel. All are enabled by default.', 'dynamic-post-type-menu' ); ?></p>
+
+                        <fieldset class="dptm-settings__choices dptm-settings__choices--simple">
+                            <legend class="screen-reader-text"><?php echo esc_html__( 'Features', 'dynamic-post-type-menu' ); ?></legend>
+                            <?php
+                            $features = [
+                                'acf'       => __( 'ACF', 'dynamic-post-type-menu' ),
+                                'metabox'   => __( 'Meta Box', 'dynamic-post-type-menu' ),
+                                'wpcodebox' => __( 'WPCodeBox', 'dynamic-post-type-menu' ),
+                            ];
+                            ?>
+                            <?php foreach ( $features as $feature_key => $feature_label ) : ?>
+                                <label class="dptm-settings__choice">
+                                    <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enabled_features][<?php echo esc_attr( $feature_key ); ?>]" value="1" <?php checked( 1, $options['enabled_features'][ $feature_key ] ?? 0 ); ?>>
+                                    <span><?php echo esc_html( $feature_label ); ?></span>
+                                </label>
+                            <?php endforeach; ?>
+                        </fieldset>
+                    </section>
+
+                    <section class="dptm-settings__card" aria-labelledby="dptm-post-types-heading">
+                        <h2 id="dptm-post-types-heading"><?php echo esc_html__( 'Content type browser', 'dynamic-post-type-menu' ); ?></h2>
+                        <p><?php echo esc_html__( 'Enable the post types that should appear in the Content Types admin-bar panel.', 'dynamic-post-type-menu' ); ?></p>
+
+                        <fieldset class="dptm-settings__choices dptm-settings__choices--post-types">
+                            <legend class="screen-reader-text"><?php echo esc_html__( 'Post types', 'dynamic-post-type-menu' ); ?></legend>
+                            <?php foreach ( $post_types as $post_type ) : ?>
+                                <?php
+                                $label = $post_type->labels->name;
+                                if ( 'bricks_template' === $post_type->name ) {
+                                    $label = __( 'Bricks Templates', 'dynamic-post-type-menu' );
+                                } elseif ( 'attachment' === $post_type->name ) {
+                                    $label = __( 'Media', 'dynamic-post-type-menu' );
+                                } elseif ( 'post' === $post_type->name ) {
+                                    $label = __( 'Posts', 'dynamic-post-type-menu' );
+                                } elseif ( 'page' === $post_type->name ) {
+                                    $label = __( 'Pages', 'dynamic-post-type-menu' );
+                                }
+
+                                $is_checked = empty( $options['enabled_post_types'] ) || in_array( $post_type->name, $options['enabled_post_types'], true );
+                                ?>
+                                <label class="dptm-settings__choice">
+                                    <input type="checkbox" name="<?php echo esc_attr( self::OPTION_KEY ); ?>[enabled_post_types][]" value="<?php echo esc_attr( $post_type->name ); ?>" <?php checked( true, $is_checked ); ?>>
+                                    <span><?php echo esc_html( $label ); ?></span>
+                                    <code><?php echo esc_html( $post_type->name ); ?></code>
+                                </label>
+                            <?php endforeach; ?>
+                        </fieldset>
+                    </section>
+
+                    <div class="dptm-settings__actions">
+                        <?php submit_button(); ?>
+                    </div>
+                </div>
             </form>
         </div>
         <?php

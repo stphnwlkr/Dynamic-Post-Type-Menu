@@ -1,6 +1,10 @@
 <?php
 namespace Dynamic_Post_Type_Menu;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Handles role-based functionality for the plugin.
  */
